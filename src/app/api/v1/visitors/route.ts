@@ -1,18 +1,10 @@
-// src/app/api/v1/visitors/route.ts
-export const runtime = "nodejs";
+type Visitor = { id: string; name: string; code: string; validTill: string; status: "active"|"revoked" };
 
 export async function GET() {
-  return Response.json({
-    data: [
-      { id: "v1", name: "Courier",     code: "A1B2C3", validTill: new Date(Date.now()+864e5).toISOString(), status: "active" },
-      { id: "v2", name: "Electrician", code: "D4E5F6", validTill: new Date(Date.now()+2*864e5).toISOString(), status: "active" },
-    ],
-  });
-}
-
-export async function POST(req: Request) {
-  // simple stub so your “Create/Revoke” forms don’t fail
-  const fd = await req.formData().catch(() => null);
-  if (fd?.get("_method") === "revoke") return Response.json({ ok: true, revoked: true });
-  return Response.json({ ok: true, created: true });
+  const now = Date.now();
+  const data: Visitor[] = [
+    { id: "v1", name: "Courier",     code: "ABCD12", validTill: new Date(now+3600e3).toISOString(), status: "active"  },
+    { id: "v2", name: "Electrician", code: "EFGH34", validTill: new Date(now-3600e3).toISOString(), status: "revoked" },
+  ];
+  return Response.json({ data });
 }
